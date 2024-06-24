@@ -1,10 +1,7 @@
 package site.rainbowx.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import site.rainbowx.backend.entity.Cart;
 import site.rainbowx.backend.service.CartService;
 import site.rainbowx.backend.utils.TokenUtils;
@@ -34,8 +31,8 @@ public class CartController {
     }
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)
-    private List<Cart> getAllCart(@RequestBody GetCartInfo getCartInfo) {
-        String username = TokenUtils.ValidateToken(getCartInfo.token);
+    private List<Cart> getAllCart(@RequestParam String token) {
+        String username = TokenUtils.ValidateToken(token);
         return username == null ? new ArrayList<>() : cartService.getCartByUserName(username);
     }
 
