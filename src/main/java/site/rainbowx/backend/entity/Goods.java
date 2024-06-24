@@ -1,7 +1,6 @@
 package site.rainbowx.backend.entity;
 
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +22,13 @@ public class Goods {
     @Column(length = 1023)
     private String description;
 
+    @OneToMany(mappedBy = "id.goods", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderGoods> orderGoodsList = new ArrayList<>();
+
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Cart> carts;
 
-    @ManyToMany(mappedBy = "goodsList", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    private List<Orders> orderList = new ArrayList<>();
+    // getters and setters
 
     public Long getId() {
         return id;
@@ -77,11 +78,11 @@ public class Goods {
         this.carts = carts;
     }
 
-    public List<Orders> getOrderList() {
-        return orderList;
+    public List<OrderGoods> getOrderGoodsList() {
+        return orderGoodsList;
     }
 
-    public void setOrderList(List<Orders> orderList) {
-        this.orderList = orderList;
+    public void setOrderGoodsList(List<OrderGoods> orderGoodsList) {
+        this.orderGoodsList = orderGoodsList;
     }
 }
