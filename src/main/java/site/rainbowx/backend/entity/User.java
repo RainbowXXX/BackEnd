@@ -6,9 +6,16 @@ import java.util.List;
 
 @Entity
 public class User {
+    enum UserPermission {
+        USER,
+        ADMIN
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private UserPermission permission;
 
     @Column(columnDefinition = "LONGTEXT")
     private String avatar;
