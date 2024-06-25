@@ -3,10 +3,8 @@ package site.rainbowx.backend.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import site.rainbowx.backend.entity.OrderGoods;
 import site.rainbowx.backend.entity.Orders;
 import site.rainbowx.backend.entity.User;
 import site.rainbowx.backend.service.GoodsService;
@@ -26,9 +24,14 @@ public class OrderController {
     @Autowired
     private UserService userService;
 
+    public static class AddArgs{
+        public String token;
+        public List<OrderGoods> orderGoods;
+    }
+
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     public List<Orders> getAllOrders(@RequestParam String token) {
-        String username = TokenUtils.GetUserName(token);
+        String username = TokenUtils.getUserName(token);
         User user = userService.getUserByUsername(username);
         if (user == null) {
             return new ArrayList<>();
@@ -36,5 +39,14 @@ public class OrderController {
         return orderService.getOrdersByUser(user);
 
 
+    }
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public boolean addOrder(@RequestBody AddArgs addArgs) {
+        Orders orders = new Orders();
+        String username = TokenUtils.validateToken(addArgs.token);
+        orders.user = userService.getUserByUsername(username);
+        orders.orderGoodsList.addAll(addArgs.orderGoods);
+        return true;
     }
 }

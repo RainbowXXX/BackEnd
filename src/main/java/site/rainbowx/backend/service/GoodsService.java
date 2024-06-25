@@ -15,11 +15,12 @@ public class GoodsService {
     public List<Goods> getAllGoods() {
         return goodsRepository.findAll();
     }
+
     public Goods saveGoods(Goods goods) {
         return goodsRepository.save(goods);
     }
+
     public void deleteGoods(Long id) {
         goodsRepository.deleteById(id);
     }
-
 }

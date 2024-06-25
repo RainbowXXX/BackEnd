@@ -18,8 +18,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "u.PhoneNumber = :#{#newInfo.phoneNumber}, u.Address = :#{#newInfo.address} WHERE u.username = :username")
     void updateUserByUsername(@Param("username") String username, @Param("newInfo") User newInfo);
 
+
+
     @Modifying
     @Transactional
     @Query("UPDATE User u SET u.passwordHash = :passwordHash, u.salt = :salt WHERE u.username = :username")
     void updateUserByUsername(@Param("username") String username, @Param("passwordHash") String passwordHash, @Param("salt") String salt);
 }
+

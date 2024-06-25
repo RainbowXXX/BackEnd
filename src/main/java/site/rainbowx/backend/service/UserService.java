@@ -44,7 +44,7 @@ public class UserService {
     public boolean changePasswd(String username, String newPassword) {
         User oldInfo = userRepository.findByUsername(username);
         if(oldInfo == null){ return false; }
-        String salt = TokenUtils.GenerateSalt();
+        String salt = TokenUtils.generateSalt();
         String passwdHash = HashUtils.calculateSHA256(newPassword + salt);
         userRepository.updateUserByUsername(username, passwdHash, salt);
         return true;

@@ -8,14 +8,14 @@ import java.util.List;
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Long id;
 
     @ManyToOne
     @JoinColumn(name = "uid", nullable = false)
-    private User user;
+    public User user;
 
     @OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderGoods> orderGoodsList = new ArrayList<>();
+    public List<OrderGoods> orderGoodsList = new ArrayList<>();
 
     // Constructors, getters, setters
 

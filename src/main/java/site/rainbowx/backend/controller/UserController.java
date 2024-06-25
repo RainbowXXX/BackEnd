@@ -18,6 +18,7 @@ import site.rainbowx.backend.utils.TokenUtils;
 import java.util.concurrent.TimeUnit;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -47,14 +48,14 @@ public class UserController {
         jsonObject.put("ok", userInfo != null);
         if (userInfo != null) {
             // 如果登陆成功，返回一个token
-            jsonObject.put("token", TokenUtils.GenerateToken(userInfo.getUsername()));
+            jsonObject.put("token", TokenUtils.generateToken(userInfo.getUsername()));
         }
         return jsonObject;
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public User createUser(@RequestBody UserLogin loginInfo) {
-        String salt = TokenUtils.GenerateSalt();
+        String salt = TokenUtils.generateSalt();
         String passwordHash = HashUtils.calculateSHA256(loginInfo.password+salt);
         User userInfo = new User(0L,null, loginInfo.username, passwordHash, salt, null, null, null);
         return userService.saveUser(userInfo);
@@ -63,7 +64,7 @@ public class UserController {
     @RequestMapping(value = "/reset", method = RequestMethod.POST)
     public JSONObject resetPasswd(@RequestBody UserResetLogin resetInfo) {
         JSONObject jsonObject = new JSONObject();
-        String username = TokenUtils.ValidateToken(resetInfo.token);
+        String username = TokenUtils.validateToken(resetInfo.token);
         if(username == null) {
             jsonObject.put("ok", false);
             logger.warn("User {} Validate Token Failed.", resetInfo.username);
@@ -78,7 +79,7 @@ public class UserController {
     @RequestMapping(value = "/modify", method = RequestMethod.POST)
     public JSONObject modifyInfo(@RequestBody UserModifyInfo newUserInfo) {
         JSONObject jsonObject = new JSONObject();
-        String username = TokenUtils.ValidateToken(newUserInfo.token);
+        String username = TokenUtils.validateToken(newUserInfo.token);
         if(username == null) {
             jsonObject.put("ok", false);
             logger.warn("User {} Validate Token Failed.", newUserInfo.newInfo.getUsername());

@@ -10,11 +10,11 @@ public class OrderGoodsId implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private Orders order;
+    public Orders order;
 
     @ManyToOne
     @JoinColumn(name = "goods_id")
-    private Goods goods;
+    public Goods goods;
 
     // Constructors, getters, setters, hashCode, and equals
     public OrderGoodsId() {}

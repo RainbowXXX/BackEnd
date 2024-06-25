@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 public class User {
-    enum UserPermission {
+    public enum UserPermission {
         USER,
         ADMIN
     }
@@ -43,6 +43,14 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Orders> ordersList;
+
+    public UserPermission getPermission() {
+        return permission;
+    }
+
+    public void setPermission(UserPermission permission) {
+        this.permission = permission;
+    }
 
     public List<Cart> getCarts() {
         return carts;

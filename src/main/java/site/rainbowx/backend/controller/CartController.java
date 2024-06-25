@@ -32,19 +32,19 @@ public class CartController {
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     private List<Cart> getAllCart(@RequestParam String token) {
-        String username = TokenUtils.ValidateToken(token);
+        String username = TokenUtils.validateToken(token);
         return username == null ? new ArrayList<>() : cartService.getCartByUserName(username);
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     private boolean addCart(@RequestBody AddCartInfo addCartInfo) {
-        String username = TokenUtils.ValidateToken(addCartInfo.token);
+        String username = TokenUtils.validateToken(addCartInfo.token);
         return username != null && cartService.addCart(username, addCartInfo.goodsId, addCartInfo.number);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     private boolean deleteCart(@RequestBody DeleteCartInfo deleteCartInfo) {
-        String username = TokenUtils.ValidateToken(deleteCartInfo.token);
+        String username = TokenUtils.validateToken(deleteCartInfo.token);
         return username != null && cartService.deleteCart(deleteCartInfo.cartId);
     }
 }
