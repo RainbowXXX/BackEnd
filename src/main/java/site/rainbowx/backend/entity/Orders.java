@@ -17,29 +17,13 @@ public class Orders {
     @OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderGoods> orderGoodsList = new ArrayList<>();
 
-    // getters and setters
+    // Constructors, getters, setters
 
-    public Long getId() {
-        return id;
-    }
+    public Orders() {}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
+    public Orders(User user) {
         this.user = user;
     }
 
-    public List<OrderGoods> getOrderGoodsList() {
-        return orderGoodsList;
-    }
-
-    public void setOrderGoodsList(List<OrderGoods> orderGoodsList) {
-        this.orderGoodsList = orderGoodsList;
-    }
+    // other getters and setters
 }

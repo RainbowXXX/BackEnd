@@ -19,35 +19,5 @@ public class OrderGoods {
         this.quantity = quantity;
     }
 
-    public OrderGoodsId getId() {
-        return id;
-    }
-
-    public void setId(OrderGoodsId id) {
-        this.id = id;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public Orders getOrder() {
-        return id.getOrder();
-    }
-
-    public void setOrder(Orders order) {
-        this.id.setOrder(order);
-    }
-
-    public Goods getGoods() {
-        return id.getGoods();
-    }
-
-    public void setGoods(Goods goods) {
-        this.id.setGoods(goods);
-    }
+    // other getters and setters
 }

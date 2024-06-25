@@ -54,4 +54,8 @@ public class UserService {
         userRepository.updateUserByUsername(newInfo.getUsername(), newInfo);
         return true;
     }
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }
