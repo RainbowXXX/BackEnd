@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import site.rainbowx.backend.entity.Goods;
 import site.rainbowx.backend.entity.User;
+import site.rainbowx.backend.entity.UserPermission;
 import site.rainbowx.backend.service.GoodsService;
 import site.rainbowx.backend.service.UserService;
 import site.rainbowx.backend.utils.TokenUtils;
@@ -47,15 +48,15 @@ public class GoodsController {
 
         User user = userService.getUserByUsername(username);
 
-        if(user == null || user.getPermission().compareTo(User.UserPermission.ADMIN)<0) {
+        if(user == null || user.permission.compareTo(UserPermission.ADMIN)<0) {
             return false;
         }
 
         Goods goods = new Goods();
-        goods.setName(addArg.name);
-        goods.setPrice(addArg.price);
-        goods.setThumbnail(addArg.thumbnail);
-        goods.setDescription(addArg.description);
+        goods.name = addArg.name;
+        goods.price = addArg.price;
+        goods.thumbnail = addArg.thumbnail;
+        goods.description = addArg.description;
         goodsService.saveGoods(goods);
         return true;
     }

@@ -21,23 +21,23 @@ public class CartService {
 
     public List<Cart> getCartByUserId(Long userId) {
         Optional<User> user = userRepository.findById(userId);
-        return user.map(User::getCarts).orElse(new ArrayList<>());
+        return user.map((user_) -> {return user_.carts;}).orElse(new ArrayList<>());
     }
 
     public List<Cart> getCartByUserName(String userName) {
         User user = userRepository.findByUsername(userName);
-        return user == null ? new ArrayList<>() : user.getCarts();
+        return user == null ? new ArrayList<>() : user.carts;
     }
 
     public boolean addCart(String username, Long goodsId, Integer num) {
         User user = userRepository.findByUsername(username);
         if (user == null) return false;
         Cart cart = new Cart();
-        cart.setUser(user);
+        cart.user = user;
         Goods goods = new Goods();
-        goods.setId(goodsId);
-        cart.setGoods(goods);
-        cart.setNumber(num);
+        goods.id = goodsId;
+        cart.goods = goods;
+        cart.number = num;
         cartRepository.save(cart);
         return true;
     }

@@ -2,7 +2,6 @@ package site.rainbowx.backend.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import site.rainbowx.backend.entity.User;
 import site.rainbowx.backend.repository.UserRepository;
 import site.rainbowx.backend.service.RedisService;
 

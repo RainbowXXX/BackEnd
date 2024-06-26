@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import site.rainbowx.backend.entity.OrderGoods;
 import site.rainbowx.backend.entity.Orders;
 import site.rainbowx.backend.entity.User;
-import site.rainbowx.backend.service.GoodsService;
 import site.rainbowx.backend.service.OrderService;
 import site.rainbowx.backend.service.UserService;
 import site.rainbowx.backend.utils.TokenUtils;
@@ -46,7 +45,7 @@ public class OrderController {
         Orders orders = new Orders();
         String username = TokenUtils.validateToken(addArgs.token);
         orders.user = userService.getUserByUsername(username);
-        orders.orderGoodsList.addAll(addArgs.orderGoods);
+        orders.orderGoods.addAll(addArgs.orderGoods);
         return true;
     }
 }

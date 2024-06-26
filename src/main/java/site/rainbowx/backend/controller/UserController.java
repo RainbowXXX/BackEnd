@@ -9,13 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import site.rainbowx.backend.entity.User;
-import site.rainbowx.backend.service.RedisService;
 import site.rainbowx.backend.service.UserService;
 import site.rainbowx.backend.utils.ErrorUtils;
 import site.rainbowx.backend.utils.HashUtils;
 import site.rainbowx.backend.utils.TokenUtils;
-
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/user")
@@ -25,6 +22,16 @@ public class UserController {
     public static class UserLogin{
         public String username;
         public String password;
+    }
+
+    public static class RegisterInfo{
+        public String username;
+        public String password;
+
+        public String avatar;
+        public String address;
+        public String nickname;
+        public String phoneNumber;
     }
 
     public static class UserResetLogin{
@@ -48,16 +55,25 @@ public class UserController {
         jsonObject.put("ok", userInfo != null);
         if (userInfo != null) {
             // 如果登陆成功，返回一个token
-            jsonObject.put("token", TokenUtils.generateToken(userInfo.getUsername()));
+            jsonObject.put("token", TokenUtils.generateToken(userInfo.username));
         }
         return jsonObject;
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public User createUser(@RequestBody UserLogin loginInfo) {
+    public User createUser(@RequestBody RegisterInfo registerInfo) {
         String salt = TokenUtils.generateSalt();
-        String passwordHash = HashUtils.calculateSHA256(loginInfo.password+salt);
-        User userInfo = new User(0L,null, loginInfo.username, passwordHash, salt, null, null, null);
+        String passwordHash = HashUtils.calculateSHA256(registerInfo.password+salt);
+
+        User userInfo = new User();
+        userInfo.salt = salt;
+
+        userInfo.username = registerInfo.username;
+        userInfo.address = registerInfo.address;
+        userInfo.phoneNumber = registerInfo.phoneNumber;
+        userInfo.nickname = registerInfo.nickname;
+
+
         return userService.saveUser(userInfo);
     }
 
@@ -82,10 +98,10 @@ public class UserController {
         String username = TokenUtils.validateToken(newUserInfo.token);
         if(username == null) {
             jsonObject.put("ok", false);
-            logger.warn("User {} Validate Token Failed.", newUserInfo.newInfo.getUsername());
+            logger.warn("User {} Validate Token Failed.", newUserInfo.newInfo.username);
             return jsonObject;
         }
-        ErrorUtils.Ensure(username.equals(newUserInfo.newInfo.getUsername()), "The token should match the username.");
+        ErrorUtils.Ensure(username.equals(newUserInfo.newInfo.username), "The token should match the username.");
         boolean res = userService.updateInfo(newUserInfo.newInfo);
         jsonObject.put("ok", res);
         return jsonObject;

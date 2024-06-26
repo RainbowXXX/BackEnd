@@ -3,50 +3,22 @@ package site.rainbowx.backend.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "cart")
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "uid", nullable = false)
-    private User user;
+    @Column(nullable = false)
+    public Integer number;
 
     @ManyToOne
     @JoinColumn(name = "gid", nullable = false)
-    private Goods goods;
+    public Goods goods;
 
-    private int number;
+    @ManyToOne
+    @JoinColumn(name = "uid", nullable = false)
+    public User user;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Goods getGoods() {
-        return goods;
-    }
-
-    public void setGoods(Goods goods) {
-        this.goods = goods;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
+    // Getters and setters
 }

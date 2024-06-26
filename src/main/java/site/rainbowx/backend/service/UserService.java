@@ -3,6 +3,7 @@ package site.rainbowx.backend.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import site.rainbowx.backend.entity.User;
+import site.rainbowx.backend.entity.UserPermission;
 import site.rainbowx.backend.repository.UserRepository;
 import site.rainbowx.backend.utils.HashUtils;
 import site.rainbowx.backend.utils.RandomUtils;
@@ -16,6 +17,18 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public UserService() {
+        if(userRepository.count() == 0) {
+            User user = new User();
+            user.username = "root";
+            user.salt = TokenUtils.generateSalt();
+            user.passwordHash = HashUtils.calculateSHA256("passwd"+user.salt);
+            user.permission = UserPermission.ADMIN;
+
+            userRepository.save(user);
+        }
+    }
+
     public User verification(String username, String password) {
         User user = userRepository.findByUsername(username);
         if(user == null){
@@ -23,8 +36,8 @@ public class UserService {
             return null;
         }
 
-        String input_hash = HashUtils.calculateSHA256(password + user.getSalt());
-        if(input_hash.equals(user.getPasswordHash())) {
+        String input_hash = HashUtils.calculateSHA256(password + user.salt);
+        if(input_hash.equals(user.passwordHash)) {
             RandomUtils.RandomSleep(690, 2568);
             return user;
         }
@@ -51,7 +64,7 @@ public class UserService {
     }
 
     public boolean updateInfo(User newInfo) {
-        userRepository.updateUserByUsername(newInfo.getUsername(), newInfo);
+        userRepository.updateUserByUsername(newInfo.username, newInfo);
         return true;
     }
 

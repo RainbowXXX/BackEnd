@@ -1,23 +1,31 @@
 package site.rainbowx.backend.entity;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "order_goods")
+@IdClass(OrderGoodsId.class)
 public class OrderGoods {
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "goods_id", nullable = false)
+    private Goods goods;
 
-    @EmbeddedId
-    private OrderGoodsId id;
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Orders orders;
 
-    private int quantity;
+    @Column(nullable = false)
+    private Integer quantity;
 
-    // Constructors, getters, setters
-    public OrderGoods() {}
-
-    public OrderGoods(Orders order, Goods goods, int quantity) {
-        this.id = new OrderGoodsId(order, goods);
-        this.quantity = quantity;
+    public OrderGoods() {
     }
 
-    // other getters and setters
+    public OrderGoods(Orders orders, Goods goods, Integer quantity) {
+        this.goods = goods;
+        this.orders = orders;
+        this.quantity = quantity;
+    }
 }
+

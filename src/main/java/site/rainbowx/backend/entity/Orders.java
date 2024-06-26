@@ -1,10 +1,11 @@
 package site.rainbowx.backend.entity;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
+
 import java.util.List;
 
 @Entity
+@Table(name = "orders")
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,16 +15,9 @@ public class Orders {
     @JoinColumn(name = "uid", nullable = false)
     public User user;
 
-    @OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<OrderGoods> orderGoodsList = new ArrayList<>();
+    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<OrderGoods> orderGoods;
 
-    // Constructors, getters, setters
-
-    public Orders() {}
-
-    public Orders(User user) {
-        this.user = user;
-    }
-
-    // other getters and setters
+    // Getters and setters
 }
+
