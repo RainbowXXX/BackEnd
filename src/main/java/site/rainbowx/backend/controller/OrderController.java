@@ -1,5 +1,6 @@
 package site.rainbowx.backend.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import site.rainbowx.backend.entity.Orders;
 import site.rainbowx.backend.entity.User;
 import site.rainbowx.backend.service.OrderService;
 import site.rainbowx.backend.service.UserService;
+import site.rainbowx.backend.utils.ReturnVal;
 import site.rainbowx.backend.utils.TokenUtils;
 
 import java.util.ArrayList;
@@ -29,23 +31,51 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public List<Orders> getAllOrders(@RequestParam String token) {
+    public JSONObject getAllOrders(@RequestParam String token) {
         String username = TokenUtils.getUserName(token);
+        if (username == null) {
+            return new ReturnVal.ReturnValFac()
+                    .failure("Invalid user token.")
+                    .build().getVal();
+        }
         User user = userService.getUserByUsername(username);
         if (user == null) {
-            return new ArrayList<>();
+            return new ReturnVal.ReturnValFac()
+                    .failure("Invalid user token.")
+                    .build().getVal();
         }
-        return orderService.getOrdersByUser(user);
 
+        List<Orders> orders = orderService.getOrdersByUser(user);
 
+        return new ReturnVal.ReturnValFac()
+                .ok(orders != null)
+                .put("orders", orders)
+                .failure("Fail to read order list.")
+                .build().getVal();
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public boolean addOrder(@RequestBody AddArgs addArgs) {
+    public JSONObject addOrder(@RequestBody AddArgs addArgs) {
         Orders orders = new Orders();
         String username = TokenUtils.validateToken(addArgs.token);
+        if (username == null) {
+            return new ReturnVal.ReturnValFac()
+                    .failure("Invalid user token.")
+                    .build().getVal();
+        }
         orders.user = userService.getUserByUsername(username);
+        if (orders.user == null) {
+            return new ReturnVal.ReturnValFac()
+                    .failure("Invalid user token.")
+                    .build().getVal();
+        }
+
         orders.orderGoods.addAll(addArgs.orderGoods);
-        return true;
+        orderService.saveOrder(orders);
+
+        return new ReturnVal.ReturnValFac()
+                .ok(orderService.saveOrder(orders) != null)
+                .failure("Fail to add goods")
+                .build().getVal();
     }
 }

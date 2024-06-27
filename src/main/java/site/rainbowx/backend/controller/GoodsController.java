@@ -1,5 +1,6 @@
 package site.rainbowx.backend.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import site.rainbowx.backend.entity.User;
 import site.rainbowx.backend.entity.UserPermission;
 import site.rainbowx.backend.service.GoodsService;
 import site.rainbowx.backend.service.UserService;
+import site.rainbowx.backend.utils.ReturnVal;
 import site.rainbowx.backend.utils.TokenUtils;
 
 import java.util.List;
@@ -35,21 +37,30 @@ public class GoodsController {
     }
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public List<Goods> getAllGoods() {
-        return goodsService.getAllGoods();
+    public JSONObject getAllGoods() {
+        List<Goods> goodsList = goodsService.getAllGoods();
+        return new ReturnVal.ReturnValFac()
+                .ok(goodsList != null)
+                .put("goods", goodsList)
+                .failure("Fail to read goods list.")
+                .build().getVal();
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public boolean addGoods(@RequestBody AddArg addArg) {
+    public JSONObject addGoods(@RequestBody AddArg addArg) {
         String username = TokenUtils.validateToken(addArg.token);
         if (username == null) {
-            return false;
+            return new ReturnVal.ReturnValFac()
+                    .failure("Invalid user token.")
+                    .build().getVal();
         }
 
         User user = userService.getUserByUsername(username);
 
         if(user == null || user.permission.compareTo(UserPermission.ADMIN)<0) {
-            return false;
+            return new ReturnVal.ReturnValFac()
+                    .failure("Permission denied.")
+                    .build().getVal();
         }
 
         Goods goods = new Goods();
@@ -58,6 +69,8 @@ public class GoodsController {
         goods.thumbnail = addArg.thumbnail;
         goods.description = addArg.description;
         goodsService.saveGoods(goods);
-        return true;
+        return new ReturnVal.ReturnValFac()
+                .ok(true)
+                .build().getVal();
     }
 }
