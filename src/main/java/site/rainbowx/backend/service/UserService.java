@@ -14,10 +14,11 @@ import java.util.List;
 @Service
 public class UserService {
 
-    @Autowired
     private UserRepository userRepository;
 
-    public UserService() {
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
         if(userRepository.count() == 0) {
             User user = new User();
             user.username = "root";
