@@ -30,6 +30,11 @@ public class OrderController {
         public List<OrderGoods> orderGoods;
     }
 
+    public static class PayArgs{
+        public String token;
+        public Long orderId;
+    }
+
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     public JSONObject getAllOrders(@RequestParam String token) {
         String username = TokenUtils.getUserName(token);
@@ -75,6 +80,21 @@ public class OrderController {
 
         return new ReturnVal.ReturnValFac()
                 .ok(orderService.saveOrder(orders) != null)
+                .failure("Fail to add goods")
+                .build().getVal();
+    }
+
+    @RequestMapping(value = "/pay", method = RequestMethod.POST)
+    public JSONObject payOrder(@RequestBody PayArgs payArgs) {
+        String username = TokenUtils.validateToken(payArgs.token);
+        if (username == null) {
+            return new ReturnVal.ReturnValFac()
+                    .failure("Invalid user token.")
+                    .build().getVal();
+        }
+
+        return new ReturnVal.ReturnValFac()
+                .ok(orderService.payOrder(payArgs.orderId))
                 .failure("Fail to add goods")
                 .build().getVal();
     }

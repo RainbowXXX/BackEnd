@@ -39,4 +39,9 @@ public class OrderService {
         OrderGoods orderGoods = new OrderGoods(order, goods, quantity);
         orderGoodsRepository.save(orderGoods);
     }
+
+    public boolean payOrder(Long id) {
+        orderRepository.updateById(id, true);
+        return true;
+    }
 }
